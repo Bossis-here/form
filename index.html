@@ -1,161 +1,219 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Contact — Simple</title>
-  <meta name="description" content="Minimal black & white contact form, single file." />
-  <style>
-    /* Black & white, minimal */
-    :root{--bg:#ffffff;--fg:#0b0b0b;--muted:#4b4b4b;--radius:10px}
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      background:var(--bg);
-      color:var(--fg);
-      display:flex;align-items:center;justify-content:center;padding:24px;
-    }
-    .container{width:100%;max-width:420px}
-    .form-card{
-      border-radius:var(--radius);
-      padding:28px;
-      border:1px solid #e6e6e6;
-      box-shadow: 0 6px 18px rgba(11,11,11,0.03);
-      background:transparent;
-    }
-    h1{margin:0 0 18px 0;font-size:20px;font-weight:600}
-    form{display:flex;flex-direction:column;gap:12px}
-    label{font-size:13px;color:var(--muted)}
-    input[type=text], input[type=email]{
-      width:100%;padding:12px 14px;border-radius:8px;border:1px solid #ddd;background:#fff;color:var(--fg);font-size:14px;
-    }
-    input:focus{outline:2px solid rgba(0,0,0,0.06)}
-    button{
-      padding:10px 14px;border-radius:8px;border:0;background:#000;color:#fff;font-weight:600;cursor:pointer;font-size:14px
-    }
-    .message{margin-top:12px;padding:10px;border-radius:8px;font-size:14px;display:none}
-    .message.show{display:block}
-    .message.success{background:#f2f9f2;border:1px solid #d7efd7;color:#0b6a0b}
-    .message.error{background:#fff5f5;border:1px solid #f1c0c0;color:#9a1b1b}
-    .small{font-size:13px;color:var(--muted);margin-top:10px}
-
-    @media (max-width:480px){.container{padding:8px}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .form-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #000;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background-color: #333;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="form-card" role="region" aria-labelledby="title">
-      <h1 id="title">Contact</h1>
-
-      <!-- Minimal form (exact fields requested) -->
-      <!-- Note: we keep action pointing to FormSubmit but submit via JS using `mode: 'no-cors'` to avoid leaving the page and to reduce CORS failures in sandboxed environments. -->
-      <form id="contactForm" action="https://formsubmit.co/ibbchoudhary@gmail.com" method="POST" novalidate>
-        <label for="name">Name</label>
-        <input id="name" name="name" type="text" required autocomplete="name" placeholder="Your name">
-
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@example.com">
-
-        <button id="sendBtn" type="submit">Send</button>
-
-        <div id="msg" class="message" role="status" aria-live="polite"></div>
-      </form>
-
-      <p class="small">This page will not leave your site on submit — success and errors are shown here. If the environment blocks network calls, a fallback method will attempt submission.</p>
+    <div class="container">
+        <header>
+            <h1>Contact Us</h1>
+            <p class="subtitle">Get in touch with us. We'd love to hear from you.</p>
+        </header>
+        
+        <div class="form-container">
+            <div id="successMessage" class="message success">
+                Thank you! Your message has been sent successfully. We'll get back to you soon.
+            </div>
+            
+            <div id="errorMessage" class="message error">
+                Sorry, there was an error sending your message. Please try again later.
+            </div>
+            
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn">Send Message</button>
+            </form>
+        </div>
     </div>
-  </div>
+    
+    <footer>
+        <p>&copy; 2023 Your Company. All rights reserved.</p>
+    </footer>
 
-  <script>
-    (function(){
-      const form = document.getElementById('contactForm');
-      const btn = document.getElementById('sendBtn');
-      const msg = document.getElementById('msg');
-
-      function show(type, text){
-        msg.className = 'message show ' + (type === 'success' ? 'success' : 'error');
-        msg.textContent = text;
-      }
-
-      // helper: create an invisible iframe fallback and submit the form targeting it
-      function submitWithIframe(formEl){
-        return new Promise((resolve) => {
-          // create hidden iframe
-          const iframe = document.createElement('iframe');
-          iframe.name = 'hidden-form-target-' + Date.now();
-          iframe.style.display = 'none';
-          document.body.appendChild(iframe);
-
-          // set form target and submit
-          const previousTarget = formEl.target;
-          formEl.target = iframe.name;
-
-          // We cannot reliably read cross-origin iframe responses. We assume submission attempted once iframe loads (or after timeout).
-          const done = () => {
-            // cleanup
-            try{ formEl.target = previousTarget; } catch(e){}
-            setTimeout(()=>{ document.body.removeChild(iframe); }, 500);
-            resolve();
-          };
-
-          // Some servers redirect; listen to load event as a sign request finished
-          iframe.addEventListener('load', done);
-
-          // safety timeout in case load never fires
-          const to = setTimeout(()=>{ done(); clearTimeout(to); }, 4000);
-
-          formEl.submit();
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Hide any previous messages
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Get form data
+            const formData = new FormData(this);
+            
+            // Simulate form submission (replace with actual submission logic)
+            // For demonstration, we'll randomly show success or error
+            const isSuccess = Math.random() > 0.3; // 70% success rate for demo
+            
+            // Show appropriate message
+            if (isSuccess) {
+                document.getElementById('successMessage').style.display = 'block';
+                // In a real implementation, you would send the form data to your server here
+                // and show success message only after successful submission
+                console.log('Form submitted successfully:', Object.fromEntries(formData));
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+                console.log('Form submission failed');
+            }
+            
+            // Reset form after submission (optional)
+            // this.reset();
         });
-      }
-
-      form.addEventListener('submit', async function(e){
-        e.preventDefault(); // keep user on this page
-
-        // simple client-side check
-        if (!form.checkValidity()){
-          show('error', 'Please complete the required fields.');
-          return;
-        }
-
-        btn.disabled = true;
-        show('success', 'Sending...');
-
-        const fd = new FormData(form);
-
-        // We'll first try fetch with mode: 'no-cors'.
-        // Reason: many sandboxed environments or FormSubmit may not provide CORS headers.
-        // Using 'no-cors' lets the browser attempt the POST without throwing a CORS error, but the response will be opaque.
-        // We treat a successful network completion as success for UX (since we can't inspect the body).
-        try{
-          await fetch(form.action, {
-            method: 'POST',
-            body: fd,
-            mode: 'no-cors',
-            cache: 'no-cache',
-          });
-
-          // If fetch didn't throw, we consider submission attempted and show success.
-          show('success', 'Thanks — your message was submitted.');
-          form.reset();
-        } catch (err){
-          // If fetch throws (network blocked), fallback to iframe submission.
-          console.warn('fetch failed, falling back to iframe submit:', err);
-          try{
-            await submitWithIframe(form);
-            show('success', 'Thanks — your message was submitted (fallback).');
-            form.reset();
-          } catch (e){
-            console.error('iframe fallback failed:', e);
-            show('error', 'Could not send message. Please try again later or contact directly via email.');
-          }
-        } finally{
-          // re-enable button after short delay so user can re-submit if needed
-          setTimeout(()=>{ btn.disabled = false; }, 800);
-        }
-
-      });
-    })();
-  </script>
+    </script>
 </body>
 </html>
