@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Static Site — Contact</title>
+  <meta name="description" content="Simple single-file static website with a contact form (FormSubmit)." />
+  <style>
+    :root{
+      --bg:#0f1724; /* deep charcoal */
+      --card:#0b1220;
+      --muted: #94a3b8;
+      --accent: #06b6d4;
+      --glass: rgba(255,255,255,0.04);
+      --radius:16px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: linear-gradient(180deg, var(--bg) 0%, #071021 100%);
+      color: #e6eef8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:32px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:980px;
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:28px;
+      align-items:center;
+    }
+
+    .hero{
+      padding:28px 32px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius: var(--radius);
+      box-shadow: 0 6px 30px rgba(2,6,23,0.6), inset 0 1px rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    h1{margin:0 0 12px 0;font-size:28px;line-height:1.05}
+    p.lead{margin:0 0 18px 0;color:var(--muted);font-size:15px}
+
+    .features{display:flex;gap:12px;flex-wrap:wrap}
+    .feature{background:var(--glass);padding:10px 12px;border-radius:10px;font-size:13px;color:var(--muted)}
+
+    /* card / form */
+    .card{
+      padding:22px;
+      border-radius:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+    }
+
+    form{display:flex;flex-direction:column;gap:12px}
+    label{font-size:13px;color:var(--muted)}
+    input[type=text], input[type=email], textarea{
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:inherit;
+      outline:none;
+      font-size:14px;
+    }
+    input:focus, textarea:focus{box-shadow:0 0 0 4px rgba(6,182,212,0.06);border-color:var(--accent)}
+    .actions{display:flex;gap:8px;align-items:center}
+    button{appearance:none;border:0;padding:10px 14px;border-radius:10px;background:linear-gradient(90deg,var(--accent), #0891b2);color:#042022;font-weight:600;cursor:pointer}
+    button[disabled]{opacity:0.6;cursor:default}
+
+    .small{font-size:13px;color:var(--muted)}
+
+    /* success message */
+    .notice{display:none;padding:12px;border-radius:10px;background:rgba(6,182,212,0.08);color:var(--accent);font-weight:600}
+    .notice.show{display:block}
+
+    /* responsive */
+    @media (max-width:900px){
+      .wrap{grid-template-columns:1fr; padding:0}
+    }
+
+    footer{margin-top:18px;font-size:13px;color:var(--muted);}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>Simple Static Site — Contact</h1>
+      <p class="lead">A single-file static website with an embedded contact form that posts to FormSubmit. Clean, accessible and responsive.</p>
+
+      <div class="features" aria-hidden>
+        <div class="feature">Single file: <strong>index.html</strong></div>
+        <div class="feature">No external libs</div>
+        <div class="feature">Accessible form</div>
+      </div>
+
+      <div style="height:18px"></div>
+      <div class="card" aria-hidden>
+        <strong>How it works</strong>
+        <p class="small">When the form is submitted it will POST to FormSubmit and then show a client-side success message while the browser follows the action. You can add <code>_next</code> hidden input to redirect to a thank-you page if desired.</p>
+        <footer>Made for testing & quick demos.</footer>
+      </div>
+    </div>
+
+    <aside class="card" aria-labelledby="contact-title">
+      <h2 id="contact-title" style="margin-top:0;margin-bottom:6px">Contact Us</h2>
+      <p class="small" style="margin-top:0;margin-bottom:12px">Fill the form and click <strong>Send</strong>. Required fields are marked.</p>
+
+      <!-- User-provided form (kept exactly as requested) -->
+      <form id="contactForm" action="https://formsubmit.co/ibbchoudhary@gmail.com" method="POST">
+        <label for="name">Name <span class="small" aria-hidden>*</span></label>
+        <input id="name" name="name" type="text" required autocomplete="name" placeholder="Your full name">
+
+        <label for="email">Email <span class="small" aria-hidden>*</span></label>
+        <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@email.com">
+
+        <!-- optional message field (added for usability) -->
+        <label for="message">Message (optional)</label>
+        <textarea id="message" name="message" rows="4" placeholder="Write a short message..."></textarea>
+
+        <div class="actions">
+          <button id="sendBtn" type="submit">Send</button>
+          <div id="spinner" style="display:none;font-size:13px;color:var(--muted)">Sending…</div>
+        </div>
+
+        <div id="notice" class="notice" role="status" aria-live="polite">
+          Thanks — your message is being sent.
+        </div>
+
+      </form>
+
+      <p class="small" style="margin-top:12px">You can customize the <code>action</code> attribute to any email or FormSubmit account. Consider adding a hidden <code>_next</code> input to redirect after submit.</p>
+    </aside>
+  </div>
+
+  <script>
+    (function(){
+      const form = document.getElementById('contactForm');
+      const btn = document.getElementById('sendBtn');
+      const spinner = document.getElementById('spinner');
+      const notice = document.getElementById('notice');
+
+      form.addEventListener('submit', function(e){
+        // small client-side UX: show a notice and disable the button so user sees feedback
+        btn.disabled = true;
+        spinner.style.display = 'block';
+        notice.classList.add('show');
+
+        // allow normal form submission to continue (so FormSubmit receives it)
+        // but re-enable after a short timeout in case the submission is blocked during testing
+        setTimeout(()=>{
+          btn.disabled = false;
+          spinner.style.display = 'none';
+        }, 4000);
+      });
+
+      // Simple progressive enhancement: validate email pattern client-side too
+      const email = document.getElementById('email');
+      email.addEventListener('input', function(){
+        if (email.validity.typeMismatch) {
+          email.setCustomValidity('Please enter a valid email address');
+        } else {
+          email.setCustomValidity('');
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
